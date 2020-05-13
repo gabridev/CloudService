@@ -111,8 +111,8 @@ namespace AuthService.API
         {
             var services = new ServiceCollection();  
 
-            services.AddMediatR(typeof(MemberCreatedDomainEvent));
-
+            services.AddMediatR(typeof(MemberEmailUpdatedDomainEvent));
+                        
             var provider = services.BuildServiceProvider();
 
             return provider.GetRequiredService<IMediator>();

@@ -48,7 +48,9 @@ namespace AuthService.RepoDB.Repositories
         {
             using (var connection = CreateConnection())
             {
-                return await MergeAsync<Member>(member);
+                var id = await connection.MergeAsync<Member>(member);
+                var results = await connection.QueryAsync<Member>(m => m.Id == member.Id);
+                return results?.FirstOrDefault();
             }
         }
 
