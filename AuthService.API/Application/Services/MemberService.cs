@@ -69,6 +69,11 @@ namespace AuthService.Domain.Services
                 if (!validationResult.Errors.Any(x => x.Severity == Severity.Error))
                 {
 
+                    var existMemberWithEmail = await _memberRepository.GetByEmailAsync(memberApi.Email);
+
+                    if (existMemberWithEmail != null)
+                        throw new MemberDomainException($"Ya existe un usuario con el email: '{memberApi.Email}'","ValidationErrors");
+
                     Guid id = Guid.NewGuid();
                     var member = Member.Create(id,
                                             memberApi?.FirstName,
@@ -82,7 +87,7 @@ namespace AuthService.Domain.Services
                     //Se publican los eventos de dominio en caso por ejemplo, que se quiera notificar al usuario mediante correo o sms añadiremos, un manejador que haga el envío de la notificación
                     //si quisieramos que este fuese completamente asíncrono, en dicho manejador añadiriamos al bus de servicio o a la cola el envío de dicho mensaje y otro microservicio estaría a 
                     //la escucha para realizar el envío
-                    await _mediator?.DispatchDomainEventsAsync(member);
+                    await _mediator?.DispatchDomainEventsAsync(member);                                       
 
                     await _memberRepository.CreateAsync(member);
                     return await _memberRepository.GetAsync(id);
@@ -111,6 +116,10 @@ namespace AuthService.Domain.Services
 
                     if (memberApi.Email != member.Email)
                     {
+                        var existMemberWithEmail = await _memberRepository.GetByEmailAsync(memberApi.Email);
+                        if (existMemberWithEmail != null)
+                            throw new MemberDomainException($"Ya existe un usuario con el email: '{memberApi.Email}'", "ValidationErrors");
+
                         member.UpdateEmail(memberApi.Email);
                     }
 

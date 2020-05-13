@@ -12,8 +12,9 @@ CREATE TABLE [dbo].[Members]
 	[Country] [nvarchar](255) NULL,
 	[PostCode] [nvarchar](128) NULL,
 	[PhoneNumber] [nvarchar](128) NULL,
-	[CreatedDateUtc] [datetime2](5) NOT NULL default GETUTCDATE(),
-	CONSTRAINT [CRIX_Member_Id] PRIMARY KEY CLUSTERED ([Id] ASC) ON [PRIMARY]
+	[CreatedDateUtc] [datetime2](5) NOT NULL default GETUTCDATE()	
 )
 ON [PRIMARY];
+GO
+CREATE  UNIQUE INDEX IXU_Email ON [dbo].[Members] (Email);
 GO
